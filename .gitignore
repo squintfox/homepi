@@ -2,7 +2,7 @@
 assets/**
 automate/**
 backup/**
-# dash/**
+dash/**
 dns/**
 monitor/**
 manage/**
@@ -13,7 +13,7 @@ web/**
 !assets/*
 !automate/*
 !backup/*
-# !dash/*
+!dash/*
 !dns/*
 !monitor/*
 !manage/*
@@ -27,7 +27,7 @@ web/**
 !assets/**/placeholder.txt
 !automate/**/placeholder.txt
 !backup/**/placeholder.txt
-# !dash/**/placeholder.txt
+!dash/**/placeholder.txt
 !dns/**/placeholder.txt
 !monitor/**/placeholder.txt
 !manage/**/placeholder.txt
