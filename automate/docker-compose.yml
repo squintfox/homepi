@@ -1,0 +1,39 @@
+services:
+  homeassistant:
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - ./config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    privileged: true
+    # network_mode: host
+    networks:
+      - caddy-automate
+    labels:
+      caddy.reverse_proxy: "{{upstreams 8123}}"
+      caddy.tls.propagation_delay: 120s
+      caddy.tls.dns: desec
+      jump.name: 'Automate'
+      jump.tags: 'home'
+      # jump.status.allowed_status_codes: '418, 500'
+      jump.status.request_method: 'GET'
+      jump.status.verify_cert: true
+      com.centurylinklabs.watchtower.enable: true
+
+  # mosquitto:
+  #   image: eclipse-mosquitto
+  #   volumes:
+  #     - ./mosquitto/config:/mosquitto/config:rw
+  #     - ./mosquitto/data:/mosquitto/data:rw
+  #     - ./mosquitto/log:/mosquitto/log:rw
+  #   ports:
+  #     - 1883:1883
+  #     - 9001:9001
+  #   restart: unless-stopped
+  #   networks:
+  #     - caddy-automate
+
+networks:
+  caddy-automate:
+    external: true

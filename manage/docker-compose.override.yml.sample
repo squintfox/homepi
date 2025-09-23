@@ -1,0 +1,6 @@
+services:
+  portainer:
+    labels:
+      caddy: manage.replacethisdomain.com
+      caddy.tls.dns.token: <desec_token>
+      jump.url: 'https://manage.replacethisdomain.com'

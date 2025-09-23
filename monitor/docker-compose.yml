@@ -1,0 +1,40 @@
+services:
+  beszel:
+    image: henrygd/beszel
+    restart: unless-stopped
+    volumes:
+      - ./beszel_data:/beszel_data
+      - ./beszel_socket:/beszel_socket
+    # ports:
+    #   - 8090:8090
+    networks:
+      - caddy-monitor
+    labels:
+      caddy.reverse_proxy: "{{upstreams 8090}}"
+      caddy.tls.propagation_delay: 120s
+      caddy.tls.dns: desec
+      jump.name: 'Monitor'
+      jump.tags: 'home'
+      jump.icon: 'beszel.png'
+      # jump.status.allowed_status_codes: '418, 500'
+      jump.status.request_method: 'GET'
+      jump.status.verify_cert: true
+      com.centurylinklabs.watchtower.enable: true
+
+  beszel-agent:
+    image: henrygd/beszel-agent
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # monitor other disks / partitions by mounting a folder in /extra-filesystems
+      # - /mnt/disk1/.beszel:/extra-filesystems/disk1:ro
+      - ./beszel_socket:/beszel_socket
+    environment:
+      LISTEN: /beszel_socket/beszel.sock
+    labels:
+      com.centurylinklabs.watchtower.enable: true
+
+networks:
+  caddy-monitor:
+    external: true

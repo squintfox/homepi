@@ -1,0 +1,35 @@
+services:
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=86400
+      - WATCHTOWER_LABEL_ENABLE=true  # so you can control which containers to update in compose files
+      - WATCHTOWER_NOTIFICATIONS=email
+      - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT=2525
+
+  homepi-updater:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - /var/opt/homepi:/var/opt/homepi # Mount the host's Git repository into the container
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - GIT_BRANCH=main # Optionally set a branch
+    restart: no
+    working_dir: /var/opt/homepi
+
+  homepi-restart:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - /var/opt/homepi:/var/opt/homepi
+      - /var/run/docker.sock:/var/run/docker.sock
+    entrypoint: ["/usr/local/bin/entrypoint-restart.sh"]
+    restart: no
+    working_dir: /var/opt/homepi

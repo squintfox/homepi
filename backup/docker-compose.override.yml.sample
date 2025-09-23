@@ -1,0 +1,8 @@
+services:
+  backrest:
+    environment:
+      - TZ=America/Los_Angeles
+    labels:
+      caddy: backup.replacethisdomain.com
+      caddy.tls.dns.token: <desec_token>
+      jump.url: 'https://backup.replacethisdomain.com'

@@ -1,0 +1,52 @@
+services:
+  jump:
+    restart: unless-stopped 
+    image: daledavies/jump
+    # ports:
+    #   - 8123:8080
+    volumes:
+      - ./backgrounds:/backgrounds
+      - ./favicon:/favicon
+      - ./search:/search
+      - ./sites:/sites
+    environment:
+      SITENAME: 'HomePi Dashboard'
+      DOCKERPROXYURL: 'dockerproxy:2375' # Matches proxy hostname and ports from above
+      # CACHEBYPASS: true
+      CHECKSTATUS: true
+      STATUSCACHE: 10
+      # DEBUG: true
+      # UNSPLASHAPIKEY: xxxx
+      # UNSPLASHCOLLECTIONS: xxxx
+      # ALTLAYOUT: true
+      # OWMAPIKEY: xxxx
+      METRICTEMP: false
+      # LATLONG: "111,111"
+    networks:
+      - caddy-dash
+    labels:
+      caddy.reverse_proxy: "{{upstreams 8080}}"
+      caddy.tls.propagation_delay: 120s
+      caddy.tls.dns: desec
+      com.centurylinklabs.watchtower.enable: true
+    depends_on:
+      - dockerproxy # Ensure dockerproxy is available before starting jump
+
+  # Configure docker socket proxy container
+  dockerproxy:
+    restart: unless-stopped 
+    image: tecnativa/docker-socket-proxy:latest
+    environment:
+      - CONTAINERS=1 # Allow access to view containers
+      - POST=0 # Make the connection read only
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Read only mount for local socket
+      - ./dockerproxy/haproxy.cfg.template:/usr/local/etc/haproxy/haproxy.cfg.template:ro
+    networks:
+      - caddy-dash
+    labels:
+      com.centurylinklabs.watchtower.enable: true
+
+networks:
+  caddy-dash:
+    external: true

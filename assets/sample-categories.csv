@@ -1,0 +1,10 @@
+name,category type,notes,require acceptance,checkin email,use default eula,eula text
+Computer,asset,,0,0,0,
+Personal Electronics,asset,,0,0,0,
+Jewelry,asset,,0,0,0,
+Fashion,asset,,0,0,0,
+Home,asset,,0,0,0,
+Audio/Video,asset,,0,0,0,
+Tools/Hardware,asset,,0,0,0,
+Home,license,,0,0,0,
+Misc Software,license,,0,0,0,

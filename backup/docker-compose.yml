@@ -1,0 +1,38 @@
+services:
+  backrest:
+    image: garethgeorge/backrest:latest
+    hostname: backrest
+    volumes:
+      - /var/opt/homepi:/host:ro                     # Read-only access to host filesystem
+      - ./data:/data
+      - ./config:/config
+      - ./cache:/cache
+      - ./tmp:/tmp
+      - ./rclone:/root/.config/rclone # Mount for rclone config (needed when using rclone remotes)
+      # - /path/to/backup/data:/userdata  # Mount local paths to backup
+      # - /path/to/local/repos:/repos     # Mount local repos (optional for remote storage)
+    environment:
+      - BACKREST_DATA=/data
+      - BACKREST_CONFIG=/config/config.json
+      - XDG_CACHE_HOME=/cache
+      - TMPDIR=/tmp
+    # ports:
+    #   - "9898:9898"
+    restart: unless-stopped
+    networks:
+      - caddy-backup
+    labels:
+      caddy.reverse_proxy: "{{upstreams 9898}}"
+      caddy.tls.propagation_delay: 120s
+      caddy.tls.dns: desec
+      jump.name: 'Backup'
+      jump.tags: 'home'
+      jump.icon: 'backrest.webp'
+      # jump.status.allowed_status_codes: '418, 500'
+      jump.status.request_method: 'GET'
+      jump.status.verify_cert: true
+      com.centurylinklabs.watchtower.enable: true
+
+networks:
+  caddy-backup:
+    external: true

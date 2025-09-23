@@ -1,0 +1,6 @@
+services:
+  homeassistant:
+    labels:
+      caddy: automate.replacethisdomain.com
+      caddy.tls.dns.token: <desec_token>
+      jump.url: 'https://automate.replacethisdomain.com'

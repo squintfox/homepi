@@ -1,0 +1,35 @@
+# Ignore everything inside these folders
+assets/**
+automate/**
+backup/**
+# dash/**
+dns/**
+monitor/**
+manage/**
+smtp/**
+web/**
+
+# Re-include the folders themselves
+!assets/*
+!automate/*
+!backup/*
+# !dash/*
+!dns/*
+!monitor/*
+!manage/*
+!smtp/*
+!web/*
+
+# Exclude local overrides
+**/docker-compose.yml.override
+
+# Re-include placeholder.txt files anywhere inside those folders
+!assets/**/placeholder.txt
+!automate/**/placeholder.txt
+!backup/**/placeholder.txt
+# !dash/**/placeholder.txt
+!dns/**/placeholder.txt
+!monitor/**/placeholder.txt
+!manage/**/placeholder.txt
+!smtp/**/placeholder.txt
+!web/**/placeholder.txt

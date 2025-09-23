@@ -1,0 +1,80 @@
+{
+   "auth": {
+      "disabled": false,
+      "users": [
+         {
+            "name": "admin",
+            "passwordBcrypt": "********"
+         }
+      ]
+   },
+   "instance": "homepi",
+   "modno": 2,
+   "plans": [
+      {
+         "backup_flags": [],
+         "excludes": [],
+         "id": "backup_plan",
+         "iexcludes": [],
+         "paths": [
+            "/host"
+         ],
+         "repo": "homepi",
+         "retention": {
+            "policyTimeBucketed": {
+               "daily": 7,
+               "hourly": 0,
+               "keepLastN": 0,
+               "monthly": 6,
+               "weekly": 4,
+               "yearly": 0
+            }
+         },
+         "schedule": {
+            "clock": "CLOCK_LOCAL",
+            "cron": "0 1 * * *"
+         }
+      }
+   ],
+   "repos": [
+      {
+         "checkPolicy": {
+            "hooks": [
+               {
+                  "actionShoutrrr": {
+                     "shoutrrrUrl": "smtp://relay.casadeperfecto.com:2525/?from=backups@casadeperfecto.com&to=robertjspadaro@gmail.com&subject=[homepi]%20Backup%20Status",
+                     "template": "{{ .Summary }}"
+                  },
+                  "conditions": [
+                     "CONDITION_UNKNOWN",
+                     "CONDITION_ANY_ERROR",
+                     "CONDITION_SNAPSHOT_WARNING",
+                     "CONDITION_SNAPSHOT_SUCCESS",
+                     "CONDITION_SNAPSHOT_SKIPPED",
+                     "CONDITION_PRUNE_SUCCESS",
+                     "CONDITION_CHECK_SUCCESS"
+                  ]
+               }
+            ],
+            "readDataSubsetPercent": 0,
+            "schedule": {
+               "clock": "CLOCK_LAST_RUN_TIME",
+               "maxFrequencyDays": 30
+            }
+         },
+         "commandPrefix": {},
+         "guid": "xxxxxxxxxxxxxxxxx",
+         "id": "homepi",
+         "password": "xxxxxxxxxxxxxxxx",
+         "prunePolicy": {
+            "maxUnusedPercent": 10,
+            "schedule": {
+               "clock": "CLOCK_LAST_RUN_TIME",
+               "maxFrequencyDays": 30
+            }
+         },
+         "uri": "rclone:google_drive:/homepi"
+      }
+   ],
+   "version": 4
+}

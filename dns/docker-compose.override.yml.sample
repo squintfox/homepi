@@ -1,0 +1,8 @@
+services:
+  technitium:
+    labels:
+      caddy: dns.replacethisdomain.com
+      caddy.tls.dns.token: <desec_token>
+      jump.url: 'https://dns.replacethisdomain.com'
+    environment:
+      - DNS_SERVER_DOMAIN=dns.replacethisdomain.com

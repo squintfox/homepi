@@ -1,0 +1,10 @@
+services:
+  beszel:
+    labels:
+      caddy: monitor.replacethisdomain.com
+      caddy.tls.dns.token: <desec_token>
+      jump.url: 'https://monitor.replacethisdomain.com'
+
+  beszel-agent:
+    environment:
+      KEY: '<beszel_ssh_key>'

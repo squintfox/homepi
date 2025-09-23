@@ -1,0 +1,47 @@
+services:
+  app:
+    image: snipe/snipe-it:${APP_VERSION:-latest}
+    restart: unless-stopped
+    volumes:
+      - ./app_storage:/var/lib/snipeit
+      - ./app_logs:/var/www/html/storage/logs
+      - ./backups:/var/www/html/storage/app/backups
+      # - ./startup.sh:/startup.sh
+    # ports:
+    #   - "${APP_PORT:-8000}:80"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - caddy-assets
+    labels:
+      caddy.reverse_proxy: "{{upstreams 80}}"
+      caddy.tls.propagation_delay: 120s
+      caddy.tls.dns: desec
+      jump.name: 'Assets'
+      jump.tags: 'home'
+      jump.icon: 'snipe-it.png'
+      # jump.status.allowed_status_codes: '418, 500'
+      jump.status.request_method: 'GET'
+      jump.status.verify_cert: true
+      com.centurylinklabs.watchtower.enable: true
+
+  db:
+    image: mariadb:11
+    restart: unless-stopped
+    volumes:
+      - ./db_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      # MYSQL_PASSWORD: ${DB_PASSWORD}
+      # MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    labels:
+      com.centurylinklabs.watchtower.enable: true
+    networks:
+      - caddy-assets
+
+networks:
+  caddy-assets:
+    external: true

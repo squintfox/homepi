@@ -1,0 +1,45 @@
+services:
+  caddy:
+    image: image/caddy-docker-proxy:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 443:443
+    environment:
+      # - CADDY_INGRESS_NETWORKS=caddy
+      - CADDY_DOCKER_SCAN_STOPPED_CONTAINERS=true
+    networks:
+      - caddy-dns
+      - caddy-assets
+      - caddy-monitor
+      - caddy-automate
+      - caddy-dash
+      - caddy-manage
+      - caddy-backup
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./caddy-data:/data
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: true
+    # cert issuance gets messed up when using the internal resolver (not 100% sure why)
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+
+networks:
+  caddy-dns:
+    name: caddy-dns
+  caddy-assets:
+    name: caddy-assets
+  caddy-monitor:
+    name: caddy-monitor
+  caddy-automate:
+    name: caddy-automate
+  caddy-dash:
+    name: caddy-dash
+  caddy-manage:
+    name: caddy-manage
+  caddy-backup:
+    name: caddy-backup

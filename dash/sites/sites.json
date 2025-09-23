@@ -1,0 +1,8 @@
+{
+    "default": {
+        "nofollow": true,
+        "icon": "my-default-icon.png",
+        "newtab": true
+    },
+    "sites": []
+}

@@ -1,0 +1,15 @@
+services:
+  jump:
+    environment:
+      # CACHEBYPASS: true
+      DEBUG: false
+      # UNSPLASHAPIKEY: xxxxxxxxxx
+      # UNSPLASHCOLLECTIONS: xxxxxxxxxx
+      # ALTLAYOUT: true
+      # OWMAPIKEY: xxxxxxxxxx
+      # LATLONG: "111.111,111.111"
+    labels:
+      caddy: dash.replacethisdomain.com
+      caddy.tls.dns.token: <desec_token>
+    depends_on:
+      - dockerproxy # Ensure dockerproxy is available before starting jump

@@ -1,0 +1,27 @@
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    restart: unless-stopped
+    # ports:
+    #   - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer_data:/data
+    environment:
+      - TZ=America/Los_Angeles  # Set your timezone
+    networks:
+      - caddy-manage
+    labels:
+      caddy.reverse_proxy: "{{upstreams 9000}}"
+      caddy.tls.propagation_delay: 120s
+      caddy.tls.dns: desec
+      jump.name: 'Manage'
+      jump.tags: 'home'
+      jump.icon: 'portainer.png'
+      jump.status.request_method: 'GET'
+      jump.status.verify_cert: true
+      com.centurylinklabs.watchtower.enable: true
+
+networks:
+  caddy-manage:
+    external: true
