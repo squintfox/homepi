@@ -21,7 +21,7 @@ web/**
 !web/*
 
 # Exclude local overrides
-**/docker-compose.yml.override
+**/docker-compose.override.yml
 
 # Re-include placeholder.txt files anywhere inside those folders
 !assets/**/placeholder.txt
