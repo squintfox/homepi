@@ -22,7 +22,8 @@ services:
       - ./caddy-data:/data
     restart: unless-stopped
     labels:
-      com.centurylinklabs.watchtower.enable: true
+      # can't auto-update the custom build
+      com.centurylinklabs.watchtower.enable: false
     # cert issuance gets messed up when using the internal resolver (not 100% sure why)
     dns:
       - 1.1.1.1
