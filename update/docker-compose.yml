@@ -15,7 +15,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    user: "1000:1000" # default homepi user
+    user: 1000 # default homepi user
+    group_add:
+      - 992   # host docker group GID
     volumes:
       - /var/opt/homepi:/var/opt/homepi # Mount the host's Git repository into the container
       - /var/run/docker.sock:/var/run/docker.sock
