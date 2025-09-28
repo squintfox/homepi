@@ -21,8 +21,10 @@ services:
     volumes:
       - /var/opt/homepi:/var/opt/homepi # Mount the host's Git repository into the container
       - /var/run/docker.sock:/var/run/docker.sock
+      - /home/homepi:/home/homepi        # Mount host home dir for Git config & SSH keys
     environment:
       - GIT_BRANCH=main # Optionally set a branch
+      - HOME=/home/homepi          # Make sure Git looks in the right place
     restart: no
     working_dir: /var/opt/homepi
 
