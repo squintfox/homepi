@@ -25,4 +25,5 @@ docker compose -f update/docker-compose.yml pull
 docker compose -f update/docker-compose.yml build homepi-updater homepi-restart --no-cache
 docker compose -f update/docker-compose.yml -f update/docker-compose.override.yml create homepi-restart
 
-echo "Run ./restart.sh or reboot the host for changes to take effect"
+echo "Run ./restart.sh or reboot the host for changes to take effect."
+echo "If you ran this via Portainer, you must reboot the host for some in-use containers to update."

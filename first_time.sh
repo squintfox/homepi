@@ -82,5 +82,31 @@ sudo unattended-upgrades --dry-run --debug
 
 echo "✅ Automatic updates are now configured!"
 
+#### Setup script to run container rebuild at boot ####
+
+SERVICE_NAME=container-rebuild
+
+# Write the systemd service unit
+cat <<'EOF' | sudo tee /etc/systemd/system/container-rebuild.service > /dev/null
+[Unit]
+Description=Rebuild containers at boot
+After=network.target docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/var/opt/homepi/restart.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# 3. Enable and start
+sudo systemctl daemon-reload
+sudo systemctl enable $SERVICE_NAME.service
+sudo systemctl start $SERVICE_NAME.service
+
+echo "Service $SERVICE_NAME installed and enabled."
+
 echo ""
 echo "Please reboot before proceeding."
