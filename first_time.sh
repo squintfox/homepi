@@ -94,6 +94,7 @@ After=network.target docker.service
 
 [Service]
 Type=oneshot
+WorkingDirectory=/var/opt/homepi
 ExecStart=/var/opt/homepi/restart.sh
 RemainAfterExit=yes
 
