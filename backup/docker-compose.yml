@@ -3,7 +3,7 @@ services:
     image: garethgeorge/backrest:latest
     hostname: backrest
     volumes:
-      - /var/opt/homepi:/host:ro                     # Read-only access to host filesystem
+      - /var/opt/homepi:/host                     # need R/W access for restores
       - ./data:/data
       - ./config:/config
       - ./cache:/cache
