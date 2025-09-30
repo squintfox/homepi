@@ -38,3 +38,10 @@ services:
     entrypoint: ["/usr/local/bin/entrypoint-restart.sh"]
     restart: no
     working_dir: /var/opt/homepi
+
+  homepi-host-restart:
+    image: alpine:latest
+    command: sh -c "touch /var/run/container-reboot-requested"
+    volumes:
+      - /var/run:/var/run
+    restart: "no"

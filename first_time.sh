@@ -109,5 +109,48 @@ sudo systemctl start $SERVICE_NAME.service
 
 echo "Service $SERVICE_NAME installed and enabled."
 
+set -e
+
+SERVICE_FILE=/etc/systemd/system/container-reboot.service
+PATH_FILE=/etc/systemd/system/container-reboot.path
+
+echo "Creating $SERVICE_FILE ..."
+sudo tee $SERVICE_FILE > /dev/null <<'EOF'
+[Unit]
+Description=Reboot host if container requests it
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c 'if [ -f /var/run/container-reboot-requested ]; then rm -f /var/run/container-reboot-requested && /sbin/reboot; fi'
+
+# Prevent reboot spam: only 1 reboot per 10 minutes
+StartLimitIntervalSec=600
+StartLimitBurst=1
+EOF
+
+echo "Creating $PATH_FILE ..."
+sudo tee $PATH_FILE > /dev/null <<'EOF'
+[Unit]
+Description=Watch for container reboot request
+
+[Path]
+PathExists=/var/run/container-reboot-requested
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+echo "Reloading systemd..."
+sudo systemctl daemon-reload
+
+echo "Enabling and starting path watcher..."
+sudo systemctl enable --now container-reboot.path
+
+echo "Setup complete!"
+echo
+echo "✅ Now, if a container touches /var/run/container-reboot-requested,"
+echo "   the host will reboot (but no more than once every 10 minutes)."
+
 echo ""
 echo "Please reboot before proceeding."
