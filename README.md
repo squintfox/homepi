@@ -34,6 +34,8 @@
     curl -fsSL https://get.docker.com | sh && \
     sudo usermod -aG docker $USER && \
     echo "✅ Docker + Compose installed."
+    ```
+
 - Run:
 
     ```bash
@@ -41,7 +43,7 @@
     sudo apt full-upgrade -y && \
     echo "✅ Pi updates complete, rebooting."
     sudo reboot
-    ```bash
+    ```
 
 - Run:
 
@@ -60,6 +62,21 @@
     cd /var/opt/homepi
     echo "✅ Repo cloned from git."
     ```
+
+- Optional:
+
+  Change the user password for homepi
+
+  ```bash
+  passwd
+  ```
+
+  Set a static IP
+
+  ```bash
+  sudo nmtui
+  sudo systemctl restart NetworkManager
+  ```
 
 - run `./first_time.sh`
 - run `./gmail_setup.sh`
