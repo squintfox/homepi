@@ -20,7 +20,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./caddy-data:/data
-    restart: unless-stopped
+    restart: always
     labels:
       # can't auto-update the custom build
       com.centurylinklabs.watchtower.enable: false
