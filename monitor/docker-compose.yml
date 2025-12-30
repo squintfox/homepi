@@ -35,6 +35,40 @@ services:
     labels:
       com.centurylinklabs.watchtower.enable: true
 
+  speedtest-tracker:
+    image: linuxserver/speedtest-tracker:latest
+    restart: unless-stopped
+    # ports:
+    #   - 8080:80
+    #   - 8443:443
+    environment:
+      - PUID=1024
+      - PGID=1000
+      - DB_CONNECTION=sqlite
+      - MAIL_MAILER=smtp
+      - MAIL_PORT=2525
+      - MAIL_USERNAME=null
+      - MAIL_PASSWORD=null
+      - MAIL_FROM_NAME="Speedtest Tracker"
+      - MAIL_SCHEME=null
+      - SPEEDTEST_SCHEDULE=6 */1 * * *
+      - SPEEDTEST_PRUNE_RESULTS_OLDER_THAN=0
+    volumes:
+      - ./speedtest-tracker:/config
+    # - /path/to-custom-ssl-keys:/config/keys
+    networks:
+      - caddy-monitor
+    labels:
+      caddy.reverse_proxy: "{{upstreams 80}}"
+      caddy.tls.propagation_delay: 120s
+      caddy.tls.dns: desec
+      jump.name: 'Speedtest'
+      jump.tags: 'home'
+      # jump.status.allowed_status_codes: '418, 500'
+      jump.status.request_method: 'GET'
+      jump.status.verify_cert: true
+      com.centurylinklabs.watchtower.enable: true
+
 networks:
   caddy-monitor:
     external: true

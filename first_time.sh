@@ -4,6 +4,7 @@
 DOMAIN="$1"
 DESEC_TOKEN="$2"
 SNIPE_APP_KEY=$(openssl rand -base64 32)
+SPEEDTEST_APP_KEY=$(openssl rand -base64 32)
 
 if [ -z "$DOMAIN" ]; then
   echo "Usage: $0 [yourdomain.com] [desec_token]"
@@ -36,6 +37,7 @@ for dir in */ ; do
       sed -i "s|<replace_random_a>|$(generate_random_string)|g" "$TARGET_FILE"
       sed -i "s|<replace_random_b>|$(generate_random_string)|g" "$TARGET_FILE"
       sed -i "s|<snipe_app_key>|$SNIPE_APP_KEY|g" "$TARGET_FILE"
+      sed -i "s|<speedtest_app_key>|$SPEEDTEST_APP_KEY|g" "$TARGET_FILE"
       echo "✅ Processed $TARGET_FILE"
     fi
   done

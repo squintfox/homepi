@@ -8,3 +8,18 @@ services:
   beszel-agent:
     environment:
       KEY: '<beszel_ssh_key>'
+
+  speedtest-tracker:
+    labels:
+      caddy: speedtest.replacethisdomain.com
+      caddy.tls.dns.token: <desec_token>
+      jump.url: 'https://speedtest.replacethisdomain.com'
+    environment:
+      - APP_TIMEZONE=America/Los_Angeles
+      - DISPLAY_TIMEZONE=America/Los_Angeles
+      - APP_KEY=base64:<speedtest_app_key>
+      - APP_URL=https://speedtest.replacethisdomain.com
+      - ASSET_URL=https://speedtest.replacethisdomain.com
+      - MAIL_HOST=relay.replacethisdomain.com
+      - MAIL_FROM_ADDRESS="speedtest@replacethisdomain.com"
+      - SPEEDTEST_SERVERS=57682, 14236, 56370
