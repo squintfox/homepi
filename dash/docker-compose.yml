@@ -35,7 +35,8 @@ services:
   # Configure docker socket proxy container
   dockerproxy:
     restart: unless-stopped 
-    image: tecnativa/docker-socket-proxy:latest
+    # https://github.com/Tecnativa/docker-socket-proxy/releases/tag/v0.4.2
+    image: tecnativa/docker-socket-proxy:v0.4.1  # something in 0.4.2 is causing issues
     environment:
       - CONTAINERS=1 # Allow access to view containers
       - POST=0 # Make the connection read only
