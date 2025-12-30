@@ -126,6 +126,10 @@ Ready to run
     docker compose down && docker compose up -d
     ```
 
+## monitor (Speedtest Tracker)
+
+- Log in as "<admin@example.com>/password", set username/password
+
 ## dns (Technitium)
 
 - Log in as "admin/admin", set username/password
