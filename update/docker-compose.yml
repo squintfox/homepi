@@ -9,6 +9,7 @@ services:
       - WATCHTOWER_POLL_INTERVAL=86400
       - WATCHTOWER_LABEL_ENABLE=true  # so you can control which containers to update in compose files
       - WATCHTOWER_NOTIFICATIONS=email
+      - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_TLS_SKIP_VERIFY=true
       - WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT=2525
 
   homepi-updater:
