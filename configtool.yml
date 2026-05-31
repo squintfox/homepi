@@ -1,0 +1,3 @@
+app: homepi
+environment: base
+additional_namespaces: []

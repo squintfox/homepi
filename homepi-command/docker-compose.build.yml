@@ -1,0 +1,10 @@
+services:
+  command:
+    image: registry.${HPI_DNS_DOMAIN}:${HPI_HTTPS_PORT}/homepi-command:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # allows configtool to set UID/GID in .env file
+        HPI_APP_UID: ${HPI_APP_UID:-1000}
+        HPI_APP_GID: ${HPI_APP_GID:-1000}

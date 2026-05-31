@@ -1,0 +1,86 @@
+x-command-base: &command-base
+  image: registry.${HPI_DNS_DOMAIN}:${HPI_HTTPS_PORT}/homepi-command:latest
+  volumes:
+    - homepi_repo:/homepi:rw
+    - homepi_stacks:/stacks:rw
+    - local_data_path:/local-data:rw
+  environment:
+    - HOME=/home/app
+    - UV_CACHE_DIR=/home/app/.cache/uv
+    - UV_LINK_MODE=copy
+  networks:
+    - webproxy-backend
+  secrets:
+    - hpi_vault_token
+    - hpi_portainer_token
+    - hpi_desec_token
+
+services:
+  command:
+    <<: *command-base
+    deploy:
+      replicas: 0
+      restart_policy:
+        condition: none
+
+  run:
+    <<: *command-base
+    command: ["./run.sh"]
+    deploy:
+      replicas: 0
+      restart_policy:
+        condition: none
+
+  pull:
+    <<: *command-base
+    command: ["git", "pull"]
+    deploy:
+      replicas: 0
+      restart_policy:
+        condition: none
+
+  # reset:
+  #   <<: *command-base
+  #   command: ["git", "reset", "--hard"]
+  #   deploy:
+  #     replicas: 0
+  #     restart_policy:
+  #       condition: none
+
+  # TODO: you should have a git pull on /stacks before building, otherwise you might
+  # be building an old image
+  build-scoreboard:
+    <<: *command-base
+    image: ghcr.io/kaniko-build/dist/chainguard-forks-kaniko/executor:latest
+    command:
+      - "--dockerfile=/stacks/scoreboard/Dockerfile"
+      - "--destination=registry.${HPI_DNS_DOMAIN}:${HPI_HTTPS_PORT}/scoreboard:latest"
+      - "--context=dir:///stacks/scoreboard/"
+    deploy:
+      replicas: 0
+      restart_policy:
+        condition: none
+
+volumes:
+  local_data_path:
+    external: true
+    name: local_data_path
+  homepi_repo:
+    external: true
+    name: homepi_repo
+  homepi_stacks:
+    external: true
+    name: homepi_stacks
+
+secrets:
+  hpi_vault_token:
+    external: true
+  hpi_portainer_token:
+    external: true
+  hpi_desec_token:
+    external: true
+
+networks:
+  webproxy-backend:
+    external: true
+    name: webproxy-backend

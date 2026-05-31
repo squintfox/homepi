@@ -1,0 +1,22 @@
+services:
+  caddy:
+    ports:
+      - ${HPI_HTTPS_PORT}:443
+      - 32400:32400
+
+  portainer-agent:
+    volumes:
+      - /volume1/@docker/volumes:/var/lib/docker/volumes
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  technitium:
+    deploy:
+      labels:
+        - homepage.widget.type=technitium
+        - homepage.widget.url=https://dns.${HPI_DNS_DOMAIN}:${HPI_HTTPS_PORT}/
+        # i added this in plaintext to my configtool user db, needs refactor
+        - homepage.widget.key=${HPI_TECHNITIUM_TOKEN}
+        - homepage.widget.range=LastHour # optional, defaults to LastHour

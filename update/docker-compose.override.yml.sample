@@ -1,0 +1,6 @@
+services:
+  watchtower:
+    environment:
+      - WATCHTOWER_NOTIFICATION_EMAIL_FROM=updates@replacethisdomain.com
+      - WATCHTOWER_NOTIFICATION_EMAIL_TO=<gmail_address>
+      - WATCHTOWER_NOTIFICATION_EMAIL_SERVER=relay.replacethisdomain.com

@@ -1,0 +1,13 @@
+services:
+  command:
+    image: homepi-command:latest
+
+  run:
+    image: homepi-command:latest
+
+  pull:
+    image: homepi-command:latest
+
+  reset:
+    image: homepi-command:latest
+ 

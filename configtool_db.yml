@@ -1,0 +1,85 @@
+homepi:
+  environments:
+    base:
+      - homepi.vaultwarden
+      - homepi_shared.desec
+      - homepi_shared.network
+      - homepi_shared.portainer
+
+  config:
+    homepi:
+      default:
+        hpi_local_data_path:
+          value: '/opt/homepi/local-data'
+          env:
+            - HPI_LOCAL_DATA_PATH
+            - TF_VAR_HPI_LOCAL_DATA_PATH
+        hpi_stacks_repo_url:
+          value: 'https://github.com/squintfox/homepi-stacks'
+          env:
+            - HPI_STACKS_REPO_URL
+            - TF_VAR_HPI_STACKS_REPO_URL
+      vaultwarden:
+        hpi_vault_token:
+          value: null
+          secret_namespace: homepi_secrets.hpi_vault_token
+          env: 
+            - HPI_VAULT_TOKEN
+            - TF_VAR_HPI_VAULT_TOKEN
+            - CFGT_VAULTWARDEN_PASSWORD
+
+    homepi_shared:
+      default:
+        hpi_time_zone:
+          value: 'America/Los_Angeles'
+          env:
+            - HPI_TIME_ZONE
+            - TF_VAR_HPI_TIME_ZONE
+        hpi_app_uid:
+          value: '1000'
+          env:
+            - HPI_APP_UID
+            - TF_VAR_HPI_APP_UID
+        hpi_app_gid:
+          value: '1000'
+          env:
+            - HPI_APP_GID
+            - TF_VAR_HPI_APP_GID
+      network:
+        hpi_https_port:
+          value: '443'
+          env:
+            - HPI_HTTPS_PORT
+            - TF_VAR_HPI_HTTPS_PORT
+      desec:
+        hpi_desec_token:
+          value: null
+          secret_namespace: homepi_secrets.hpi_desec_token
+          env:
+            - HPI_DESEC_TOKEN
+            - TF_VAR_HPI_DESEC_TOKEN
+      portainer:
+        hpi_portainer_token:
+          value: null
+          secret_namespace: homepi_secrets.hpi_portainer_token
+          env:
+            - HPI_PORTAINER_TOKEN
+            - TF_VAR_HPI_PORTAINER_TOKEN
+
+    homepi_secrets:
+      default: {}
+      hpi_desec_token:
+        secret_type:
+          value: file
+        file-path:
+          value: '/run/secrets/hpi_desec_token'
+      hpi_portainer_token:
+        secret_type:
+          value: file
+        file-path:
+          value: '/run/secrets/hpi_portainer_token'
+      hpi_vault_token:
+        secret_type:
+          value: file
+        file-path:
+          value: '/run/secrets/hpi_vault_token'

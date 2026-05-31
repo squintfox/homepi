@@ -1,0 +1,74 @@
+homepi:
+  environments:
+    base:
+      - homepi.default
+      - homepi_shared.network
+
+  config:
+    homepi:
+      default:
+        hpi_local_data_path:
+          value: '/volume1/Rob/docker_data'
+          env:
+            - HPI_LOCAL_DATA_PATH
+            - TF_VAR_HPI_LOCAL_DATA_PATH
+        hpi_stacks_repo_url:
+          value: 'https://git.stuffthatsfine.com:444/squintfox/homepi-stacks'
+          env:
+            - HPI_STACKS_REPO_URL
+            - TF_VAR_HPI_STACKS_REPO_URL
+
+    homepi_shared:
+      default:
+        # RECOMMENDED
+        hpi_time_zone:
+          value: 'America/Los_Angeles'
+          env:
+            - HPI_TIME_ZONE
+            - TF_VAR_HPI_TIME_ZONE
+        # REQUIRED
+        hpi_primary_email:
+          value: 'robertjspadaro@gmail.com'
+          env:
+            - HPI_PRIMARY_EMAIL
+            - TF_VAR_HPI_PRIMARY_EMAIL
+            - CFGT_VAULTWARDEN_USERNAME
+        hpi_app_uid:
+          value: '1026'
+          env:
+            - HPI_APP_UID
+            - TF_VAR_HPI_APP_UID
+        hpi_app_gid:
+          value: '100'
+          env:
+            - HPI_APP_GID
+            - TF_VAR_HPI_APP_GID
+      network:
+        # REQUIRED
+        hpi_local_ip_address:
+          value: '192.168.10.3'
+          env:
+            - HPI_LOCAL_IP_ADDRESS
+            - TF_VAR_HPI_LOCAL_IP_ADDRESS
+        # REQUIRED
+        hpi_dns_domain:
+          value: 'stuffthatsfine.com'
+          env:
+            - HPI_DNS_DOMAIN
+            - TF_VAR_HPI_DNS_DOMAIN
+        hpi_https_port:
+          value: '444'
+          env:
+            - HPI_HTTPS_PORT
+            - TF_VAR_HPI_HTTPS_PORT
+
+    homepi_secrets:
+      default: {}
+      # REQUIRED
+      vault:
+        secret_type:
+          value: vaultwarden
+        vault-url:
+          value: 'https://vault.${HPI_DNS_DOMAIN}:${HPI_HTTPS_PORT}'
+        folder-name:
+          value: 'homepi'

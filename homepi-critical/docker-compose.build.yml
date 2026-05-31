@@ -1,0 +1,6 @@
+services:
+  homepi_caddy:
+    image: registry.${HPI_DNS_DOMAIN}:${HPI_HTTPS_PORT}/homepi-caddy:latest
+    build:
+      context: .
+      # dockerfile: Dockerfile

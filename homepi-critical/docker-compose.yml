@@ -1,0 +1,174 @@
+services:
+  scheduler:
+    image: crazymax/swarm-cronjob:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      TZ: ${HPI_TIME_ZONE}
+      LOG_LEVEL: 'info'
+      LOG_JSON: 'false'
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
+  caddy:
+    image: registry.${HPI_DNS_DOMAIN}:${HPI_HTTPS_PORT}/homepi-caddy:latest
+    ports:
+      - ${HPI_HTTPS_PORT}:443
+      - 32400:32400  # for Plex
+    volumes:
+      - ${HPI_LOCAL_DATA_PATH}/caddy:/data
+    environment:
+      DOCKER_HOST: tcp://dockerproxy:2375
+      CADDY_INGRESS_NETWORKS: webproxy-backend
+    networks:
+      - webproxy-backend
+    # cert issuance gets messed up when using the internal resolver (not 100% sure why)
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    # ports:
+    #   - "9000:9000"
+    volumes:
+      - ${HPI_LOCAL_DATA_PATH}/portainer:/data
+    environment:
+      - TZ=${HPI_TIME_ZONE}
+    networks:
+      - webproxy-backend
+    labels:
+      caddy: manage.${HPI_DNS_DOMAIN}
+      caddy.reverse_proxy: "{{upstreams 9000}}"
+      caddy.tls.propagation_delay: 120s
+      caddy.tls.dns: desec
+      caddy.tls.dns.token: ${HPI_DESEC_TOKEN}
+    deploy:
+      labels:
+        - homepage.group=Management  
+        - homepage.name=Manage
+        - homepage.icon=sh-portainer-pink
+        - homepage.href=https://manage.${HPI_DNS_DOMAIN}:${HPI_HTTPS_PORT}/
+        # - homepage.description=Manage
+
+  portainer-agent:
+    image: portainer/agent:latest
+    # ports:
+    #   - "9001:9001"
+    environment:
+      CAP_HOST_MANAGEMENT: 1
+      AGENT_CLUSTER_ADDR: localhost
+    networks:
+      - webproxy-backend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+      - /:/host
+
+  dockerproxy:
+    image: tecnativa/docker-socket-proxy:latest
+    environment:
+      - CONTAINERS=1 # Allow access to viewing containers
+      - SERVICES=1 # Allow access to viewing services (necessary when using Docker Swarm)
+      - TASKS=1 # Allow access to viewing tasks (necessary when using Docker Swarm)
+      - CONFIGS=1 # Allow caddy to read Swarm configs through the proxy
+      - NETWORKS=1 # Allow reverse proxies to inspect attached networks
+      - SWARM=1 # Allow caddy to query Swarm state required for ingress discovery
+      - NODES=1 # Allow access to node metadata used by Swarm-aware lookups
+      - INFO=1 # Allow basic Docker daemon information lookups
+      - POST=0 # Disallow any POST requests (container creation, etc.) for security hardening
+    networks:
+      - webproxy-backend
+    # ports:
+    #   - 127.0.0.1:2375:2375
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
+  registry:
+    image: registry:3
+    environment:
+      REGISTRY_STORAGE_DELETE_ENABLED: "true"
+    volumes:
+      - ${HPI_LOCAL_DATA_PATH}/registry:/var/lib/registry
+    # ports:
+    #   - "5000:5000"
+    networks:
+      - webproxy-backend
+    labels:
+      caddy: registry.${HPI_DNS_DOMAIN}
+      caddy.reverse_proxy: "{{upstreams 5000}}"
+      caddy.tls.propagation_delay: 120s
+      caddy.tls.dns: desec
+      caddy.tls.dns.token: ${HPI_DESEC_TOKEN}
+
+  technitium:
+    image: technitium/dns-server:latest
+    ports:
+      - "53:53/udp" #DNS service
+    # - "53:53/tcp" #DNS service
+    volumes:
+      - ${HPI_LOCAL_DATA_PATH}/technitium:/etc/dns
+    environment:
+      - DNS_SERVER_DOMAIN=dns.${HPI_DNS_DOMAIN} #The primary domain name used by this DNS Server to identify itself.
+      # - DNS_SERVER_ADMIN_PASSWORD=password #DNS web console admin user password.
+      # - DNS_SERVER_ADMIN_PASSWORD_FILE=password.txt #The path to a file that contains a plain text password for the DNS web console admin user.
+      # - DNS_SERVER_PREFER_IPV6=false #DNS Server will use IPv6 for querying whenever possible with this option enabled.
+      # - DNS_SERVER_OPTIONAL_PROTOCOL_DNS_OVER_HTTP=false #Enables DNS server optional protocol DNS-over-HTTP on TCP port 8053 to be used with a TLS terminating reverse proxy like nginx.
+      # - DNS_SERVER_RECURSION=AllowOnlyForPrivateNetworks #Recursion options: Allow, Deny, AllowOnlyForPrivateNetworks, UseSpecifiedNetworkACL.
+      # - DNS_SERVER_RECURSION_NETWORK_ACL=192.168.10.0/24, !192.168.10.2 #Comma separated list of IP addresses or network addresses to allow access. Add ! character at the start to deny access, e.g. !192.168.10.0/24 will deny entire subnet. The ACL is processed in the same order its listed. If no networks match, the default policy is to deny all except loopback. Valid only for `UseSpecifiedNetworkACL` recursion option.
+      # - DNS_SERVER_RECURSION_DENIED_NETWORKS=1.1.1.0/24 #Comma separated list of IP addresses or network addresses to deny recursion. Valid only for `UseSpecifiedNetworkACL` recursion option. This option is obsolete and DNS_SERVER_RECURSION_NETWORK_ACL should be used instead.
+      # - DNS_SERVER_RECURSION_ALLOWED_NETWORKS=127.0.0.1, 192.168.1.0/24 #Comma separated list of IP addresses or network addresses to allow recursion. Valid only for `UseSpecifiedNetworkACL` recursion option.  This option is obsolete and DNS_SERVER_RECURSION_NETWORK_ACL should be used instead.
+      - DNS_SERVER_ENABLE_BLOCKING=true #Sets the DNS server to block domain names using Blocked Zone and Block List Zone.
+      - DNS_SERVER_BLOCK_LIST_URLS=https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/multi-onlydomains.txt #A comma separated list of block list URLs.
+      - DNS_SERVER_FORWARDERS=1.1.1.1, 8.8.8.8 #Comma separated list of forwarder addresses.
+      - DNS_SERVER_FORWARDER_PROTOCOL=Tls #Forwarder protocol options: Udp, Tcp, Tls, Https, HttpsJson.
+    networks:
+      - webproxy-backend
+    labels:
+      caddy: dns.${HPI_DNS_DOMAIN}
+      caddy.reverse_proxy: "{{upstreams 5380}}"
+      caddy.tls.propagation_delay: 120s
+      caddy.tls.dns: desec
+      caddy.tls.dns.token: ${HPI_DESEC_TOKEN}
+    deploy:
+      labels:
+        - homepage.group=Management  
+        - homepage.name=DNS
+        - homepage.icon=sh-technitium
+        - homepage.href=https://dns.${HPI_DNS_DOMAIN}:${HPI_HTTPS_PORT}/
+        # - homepage.description=DNS
+
+  vaultwarden:
+    image: vaultwarden/server:latest
+    volumes:
+      - ${HPI_LOCAL_DATA_PATH}/vaultwarden:/data
+    environment:
+      DOMAIN: 'https://vault.${HPI_DNS_DOMAIN}:${HPI_HTTPS_PORT}'
+      # ADMIN_TOKEN: xxxxxxx  # this isn't necessary for bw cli
+      SIGNUPS_ALLOWED: 'true'
+    networks:
+      - webproxy-backend
+    labels:
+      caddy: vault.${HPI_DNS_DOMAIN}
+      caddy.reverse_proxy: "{{upstreams 80}}"
+      caddy.tls.propagation_delay: 120s
+      caddy.tls.dns: desec
+      caddy.tls.dns.token: ${HPI_DESEC_TOKEN}
+    deploy:
+      labels:
+        - homepage.group=Home  
+        - homepage.name=Vault
+        - homepage.icon=sh-vaultwarden
+        - homepage.href=https://vault.${HPI_DNS_DOMAIN}:${HPI_HTTPS_PORT}/
+        # - homepage.description=Vault
+
+networks:
+  webproxy-backend:
+    external: true
+    name: webproxy-backend
