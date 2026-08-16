@@ -5,10 +5,10 @@ ARG HPI_APP_UID=1000
 ARG HPI_APP_GID=1000
 # TODO: updatable
 # https://github.com/opentofu/opentofu/releases
-ARG OPENTOFU_VERSION=1.12.0
+ARG OPENTOFU_VERSION=1.12.3
 # TODO: updatable
 # https://github.com/bitwarden/clients/releases (specifically CLI)
-ARG BW_VERSION=2026.4.1
+ARG BW_VERSION=2026.6.0
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \

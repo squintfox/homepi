@@ -1,8 +1,7 @@
 import os
-import subprocess
 
 import requests
-from constants import *
+from constants import CONFIG_PATH
 from stack import Stack
 
 
@@ -114,6 +113,8 @@ stack_specs = [
     # ('file-server', 'file-server', base_config),
     ('listen', 'listen', base_config),
     ('scoreboard', 'scoreboard', base_config),
+    ('infra-monitor', 'infra-monitor', base_config),
+    ('auth', 'auth', base_config),
 ]
 
 for stack_name, stack_path, stack_base_config in stack_specs:

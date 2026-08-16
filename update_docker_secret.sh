@@ -18,7 +18,7 @@ while [[ $# -gt 0 ]]; do
 		-h|--help)
 			echo "Usage: $0 --secret <secret-name>"
 			echo ""
-			echo "Known secrets: hpi_vault_token, hpi_portainer_token, hpi_desec_token"
+			echo "Known secrets: hpi_vault_token, hpi_portainer_token, hpi_desec_token, hpi_tfstate_passphrase"
 			exit 0
 			;;
 		*)
@@ -33,9 +33,19 @@ if [[ -z "$SECRET_NAME" ]]; then
 	echo "Error: --secret <secret-name> is required" >&2
 	echo "Usage: $0 --secret <secret-name>" >&2
 	echo ""
-	echo "Known secrets: hpi_vault_token, hpi_portainer_token, hpi_desec_token" >&2
+	echo "Known secrets: hpi_vault_token, hpi_portainer_token, hpi_desec_token, hpi_tfstate_passphrase" >&2
 	exit 1
 fi
+
+case "$SECRET_NAME" in
+	hpi_vault_token|hpi_portainer_token|hpi_desec_token|hpi_tfstate_passphrase)
+		;;
+	*)
+		echo "Error: unsupported secret '$SECRET_NAME'" >&2
+		echo "Known secrets: hpi_vault_token, hpi_portainer_token, hpi_desec_token, hpi_tfstate_passphrase" >&2
+		exit 1
+		;;
+esac
 
 # stop the stack and wait for services to be gone
 echo "Stopping stack $STACK_NAME..."

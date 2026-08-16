@@ -14,6 +14,7 @@ x-command-base: &command-base
     - hpi_vault_token
     - hpi_portainer_token
     - hpi_desec_token
+    - hpi_tfstate_passphrase
 
 services:
   command:
@@ -25,7 +26,15 @@ services:
 
   run:
     <<: *command-base
-    command: ["./run.sh"]
+    command: ["bash", "./run.sh"]
+    deploy:
+      replicas: 0
+      restart_policy:
+        condition: none
+
+  run_local:
+    <<: *command-base
+    command: ["bash", "./run_local.sh"]
     deploy:
       replicas: 0
       restart_policy:
@@ -33,7 +42,7 @@ services:
 
   pull:
     <<: *command-base
-    command: ["git", "pull"]
+    command: ["bash", "-c", "git -C /homepi pull && git -C /stacks pull"]
     deploy:
       replicas: 0
       restart_policy:
@@ -61,6 +70,18 @@ services:
       restart_policy:
         condition: none
 
+  build-snipe-mcp:
+    <<: *command-base
+    image: ghcr.io/kaniko-build/dist/chainguard-forks-kaniko/executor:latest
+    command:
+      - "--dockerfile=/stacks/assets/mcp/Dockerfile"
+      - "--destination=registry.${HPI_DNS_DOMAIN}:${HPI_HTTPS_PORT}/snipe-mcp:latest"
+      - "--context=dir:///stacks/assets/mcp/"
+    deploy:
+      replicas: 0
+      restart_policy:
+        condition: none
+
 volumes:
   local_data_path:
     external: true
@@ -78,6 +99,8 @@ secrets:
   hpi_portainer_token:
     external: true
   hpi_desec_token:
+    external: true
+  hpi_tfstate_passphrase:
     external: true
 
 networks:

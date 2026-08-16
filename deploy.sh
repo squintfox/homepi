@@ -81,6 +81,26 @@ if ! docker secret inspect hpi_portainer_token >/dev/null 2>&1; then
 	printf '%s' 'CHANGE_ME' | docker secret create hpi_portainer_token -
 fi
 
+# set a random, storng value for the terraform state encryption passphrase if it 
+# doesn't already exist
+if docker secret inspect hpi_tfstate_passphrase >/dev/null 2>&1; then
+	echo "hpi_tfstate_passphrase already exists; skipping."
+else
+	if command -v openssl >/dev/null 2>&1; then
+		HPI_TFSTATE_PASSPHRASE="$(openssl rand -base64 48 | tr -d '\n')"
+	elif command -v base64 >/dev/null 2>&1; then
+		HPI_TFSTATE_PASSPHRASE="$(head -c 48 /dev/urandom | base64 | tr -d '\n')"
+	else
+		echo "Unable to generate hpi_tfstate_passphrase: requires openssl or base64." >&2
+		exit 1
+	fi
+
+	echo "Generated value for hpi_tfstate_passphrase:"
+	echo "$HPI_TFSTATE_PASSPHRASE"
+	printf '%s' "$HPI_TFSTATE_PASSPHRASE" | docker secret create hpi_tfstate_passphrase -
+	unset HPI_TFSTATE_PASSPHRASE
+fi
+
 # Enable cgroup memory settings for docker monitoring
 
 sudo grep -q "cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1" /boot/firmware/cmdline.txt \

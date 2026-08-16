@@ -1,12 +1,14 @@
 {
-    "recommendations": [
-        "vscode-icons-team.vscode-icons",
-        "formulahendry.code-runner",
-        "eamodio.gitlens",
-        "ms-python.python",
-        "KevinRose.vsc-python-indent",
-        "ms-python.black-formatter",
-        "ms-python.isort",
-        "opentofu.vscode-opentofu"
-    ]
+  "recommendations": [
+    "vscode-icons-team.vscode-icons",
+    "formulahendry.code-runner",
+    "eamodio.gitlens",
+    "ms-python.python",
+    "ms-python.black-formatter",
+    "esbenp.prettier-vscode",
+    "charliermarsh.ruff",
+    "tamasfe.even-better-toml",
+    "redhat.vscode-yaml",
+    "opentofu.vscode-opentofu"
+  ]
 }

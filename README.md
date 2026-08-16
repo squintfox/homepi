@@ -164,7 +164,7 @@ Create these items in Vaultwarden:
   - Username: `speedtest`
   - Password: use the password generator (this is your Postgres password)
 
-Then add `replicas=1` to the `homepi-command_run` service. This runs deployment of the stacks.  Once stacks are loaded and Caddy has issued all certificates, proceed.
+Then add `replicas=1` to the `homepi-command_run` service. This runs deployment of the stacks. Once stacks are loaded and Caddy has issued all certificates, proceed.
 
 ### Monitoring (Beszel)
 
@@ -205,9 +205,6 @@ Log into <https://speedtest.[YOUR_DOMAIN]> and set up an admin account.
   - well you probably still do, portainer, registry and caddy
   - but you can build command in a container now and update without SSH
   - same with caddy
-- can you encrypt tfstate??
-
-
 
 ## Recommended Stacks
 
@@ -318,19 +315,19 @@ docker compose exec backrest rclone config
 
 When prompted:
 
-| Prompt | Value |
-| --- | --- |
-| Name | `google_drive` |
-| Storage type | `20` (Google Drive) |
-| Client ID | your client ID |
-| Client Secret | your key |
-| Scope | `1` (full access) |
-| Service account file | blank |
-| Advanced config | `N` |
-| Web browser auth | `N` (download rclone for Windows from <https://rclone.org/downloads/>, run locally, then paste token) |
-| Shared drive | `N` |
-| Save | `Y` |
-| Quit | `Q` |
+| Prompt               | Value                                                                                                 |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
+| Name                 | `google_drive`                                                                                        |
+| Storage type         | `20` (Google Drive)                                                                                   |
+| Client ID            | your client ID                                                                                        |
+| Client Secret        | your key                                                                                              |
+| Scope                | `1` (full access)                                                                                     |
+| Service account file | blank                                                                                                 |
+| Advanced config      | `N`                                                                                                   |
+| Web browser auth     | `N` (download rclone for Windows from <https://rclone.org/downloads/>, run locally, then paste token) |
+| Shared drive         | `N`                                                                                                   |
+| Save                 | `Y`                                                                                                   |
+| Quit                 | `Q`                                                                                                   |
 
 #### 3. Configure backrest
 

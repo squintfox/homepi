@@ -4,9 +4,8 @@ Write-Host ''
 Write-Host 'Please wait, installing/upgrading environment... (this may take a few minutes)'
 Write-Host ''
 
-# remove any existing venv to ensure a clean install
+# deactivate any existing venv
 if (Test-Path env:VIRTUAL_ENV) { deactivate }
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue venv
 
 # install/upgrade uv
 winget install --id=astral-sh.uv -e

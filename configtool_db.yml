@@ -5,6 +5,7 @@ homepi:
       - homepi_shared.desec
       - homepi_shared.network
       - homepi_shared.portainer
+      - homepi_shared.tofu
 
   config:
     homepi:
@@ -65,6 +66,13 @@ homepi:
           env:
             - HPI_PORTAINER_TOKEN
             - TF_VAR_HPI_PORTAINER_TOKEN
+      tofu:
+        hpi_tfstate_passphrase:
+          value: null
+          secret_namespace: homepi_secrets.hpi_tfstate_passphrase
+          env:
+            - HPI_TFSTATE_PASSPHRASE
+            - TF_VAR_HPI_TFSTATE_PASSPHRASE
 
     homepi_secrets:
       default: {}
@@ -83,3 +91,8 @@ homepi:
           value: file
         file-path:
           value: '/run/secrets/hpi_vault_token'
+      hpi_tfstate_passphrase:
+        secret_type:
+          value: file
+        file-path:
+          value: '/run/secrets/hpi_tfstate_passphrase'

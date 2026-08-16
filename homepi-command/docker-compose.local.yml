@@ -5,6 +5,9 @@ services:
   run:
     image: homepi-command:latest
 
+  run_local:
+    image: homepi-command:latest
+
   pull:
     image: homepi-command:latest
 

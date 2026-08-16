@@ -49,7 +49,7 @@ services:
       labels:
         - homepage.group=Management  
         - homepage.name=Manage
-        - homepage.icon=sh-portainer-pink
+        - homepage.icon=sh-portainer-light
         - homepage.href=https://manage.${HPI_DNS_DOMAIN}:${HPI_HTTPS_PORT}/
         # - homepage.description=Manage
 
