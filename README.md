@@ -30,7 +30,19 @@ SSH into the Pi and run each block in order.
 
 ```bash
 sudo apt update && \
-sudo apt install -y git && \
+sudo apt install -y \
+  git \
+  curl \
+  network-manager \
+  wpasupplicant \
+  wireless-tools \
+  firmware-linux \
+  firmware-misc-nonfree \
+  busybox \
+  console-setup \
+  unattended-upgrades \
+  sudo \
+  bash-completion && \
 sudo apt upgrade -y && \
 curl -fsSL https://get.docker.com | sh && \
 sudo usermod -aG docker $USER && \
@@ -95,13 +107,19 @@ nano configtool_db.user.yml
 exit
 
 ./deploy_critical.sh
+./exec_shell.sh
+
+# From inside the container (it will still fail)
+./run.sh
+exit
 ```
 
 After this, wait while Let's Encrypt issues certificates. This can take several minutes.
 Use `./monitor_critical.sh` to validate progress.
 
 ```bash
-# When finished, force a service restart so you can log into Portainer within 5 minutes of start
+# When finished, force a service restart so you can build the caddy container now that
+# the registry is up
 ./deploy_critical.sh --no-build --force
 ```
 
@@ -119,6 +137,7 @@ Log into <https://dns.[YOUR_DOMAIN]> and change the admin password.
 
 ### Management (Portainer)
 
+(You may need to force a service restart, if it's been more than 5 minutes, portainer has a setup timer)
 Log into <https://manage.[YOUR_DOMAIN]> and set an admin password.
 
 - Add Environment -> Docker Swarm

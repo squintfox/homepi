@@ -21,7 +21,7 @@ is_monitor_follower_pid() {
 	local cmd
 	cmd="$(ps -p "$pid" -o args= 2>/dev/null || true)"
 	[[ -n "$cmd" ]] || return 1
-	[[ "$cmd" == *"docker service logs -f -n 20 --timestamps"* && "$cmd" == *"$STACK_NAME"* ]]
+	[[ "$cmd" == *"docker service logs -f -n 0 --timestamps"* && "$cmd" == *"$STACK_NAME"* ]]
 }
 
 terminate_follower_pid() {
@@ -45,7 +45,7 @@ cleanup_orphaned_followers() {
 	done
 
 	# Fallback: clean stale docker log followers for this stack.
-	pkill -TERM -f "docker service logs -f -n 20 --timestamps ${STACK_NAME}_" 2>/dev/null || true
+	pkill -TERM -f "docker service logs -f -n 0 --timestamps ${STACK_NAME}_" 2>/dev/null || true
 }
 
 cleanup() {
@@ -67,7 +67,7 @@ trap cleanup EXIT
 cleanup_orphaned_followers
 
 while IFS= read -r service; do
-	docker service logs -f -n 20 --timestamps "$service" 2>&1 | while IFS= read -r line; do
+	docker service logs -f -n 0 --timestamps "$service" 2>&1 | while IFS= read -r line; do
 		printf '[%s] %s\n' "$service" "$line"
 	done &
 	pids+=("$!")

@@ -60,7 +60,7 @@ if [[ "$(docker info --format '{{.Swarm.LocalNodeState}}')" != "active" ]]; then
 fi
 
 # limit task history to prevent swarm from getting bogged down with old tasks if there are recurring failures
-docker swarm update --task-history-limit 3
+docker swarm update --task-history-limit 5
 
 if ! docker secret inspect hpi_desec_token >/dev/null 2>&1; then
 	read -r -s -p "Enter value for hpi_desec_token: " HPI_DESEC_TOKEN
@@ -81,7 +81,7 @@ if ! docker secret inspect hpi_portainer_token >/dev/null 2>&1; then
 	printf '%s' 'CHANGE_ME' | docker secret create hpi_portainer_token -
 fi
 
-# set a random, storng value for the terraform state encryption passphrase if it 
+# set a random, strong value for the terraform state encryption passphrase if it 
 # doesn't already exist
 if docker secret inspect hpi_tfstate_passphrase >/dev/null 2>&1; then
 	echo "hpi_tfstate_passphrase already exists; skipping."
@@ -102,6 +102,7 @@ else
 fi
 
 # Enable cgroup memory settings for docker monitoring
+# TODO: doesn't work on debian
 
 sudo grep -q "cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1" /boot/firmware/cmdline.txt \
   || sudo sed -i 's/$/ cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1/' /boot/firmware/cmdline.txt

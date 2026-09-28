@@ -79,6 +79,7 @@ services:
       - NODES=1 # Allow access to node metadata used by Swarm-aware lookups
       - INFO=1 # Allow basic Docker daemon information lookups
       - POST=0 # Disallow any POST requests (container creation, etc.) for security hardening
+      - LOG_LEVEL=notice
     networks:
       - webproxy-backend
     # ports:
@@ -94,6 +95,9 @@ services:
     image: registry:3
     environment:
       REGISTRY_STORAGE_DELETE_ENABLED: "true"
+      REGISTRY_LOG_LEVEL: info
+      REGISTRY_LOG_FORMAT: text
+      # REGISTRY_LOG_ACCESSLOG_DISABLED: "true"
     volumes:
       - ${HPI_LOCAL_DATA_PATH}/registry:/var/lib/registry
     # ports:

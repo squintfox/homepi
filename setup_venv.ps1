@@ -63,7 +63,7 @@ catch {
 $env:UV_SYSTEM_CERTS = 'true'
 # Install that Python version and upgrade to latest patch
 uv python install $PY_VERSION --force
-uv python upgrade --preview-features python-upgrade
+uv python upgrade
 
 # create venv if it doesn't exist
 if (-not (Test-Path -Path '.venv')) {

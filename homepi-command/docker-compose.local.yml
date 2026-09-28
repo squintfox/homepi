@@ -1,6 +1,9 @@
 services:
   command:
     image: homepi-command:latest
+    # when running local, have the service auto-start
+    deploy:
+      replicas: 1
 
   run:
     image: homepi-command:latest
