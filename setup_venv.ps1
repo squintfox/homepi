@@ -75,6 +75,9 @@ if (-not (Test-Path -Path '.venv')) {
 # install/upgrade all dependencies
 uv sync --all-groups
 
+# install git pre-commit hooks
+pre-commit install
+
 Write-Host ''
 Write-Host 'Completed environment setup.'
 Write-Host ''

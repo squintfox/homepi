@@ -31,10 +31,6 @@ fi
 # activate venv
 source .venv/bin/activate
 
-# UNCOMMENT to upgrade lockfile/deps
-# uv lock --upgrade
-# pre-commit autoupdate
-
 uv sync --all-groups
 
 # install local pre-commit hooks

@@ -17,6 +17,32 @@ homepi:
           env:
             - HPI_STACKS_REPO_URL
             - TF_VAR_HPI_STACKS_REPO_URL
+        hpi_stacks_enabled:
+          value:
+            # default
+            - homepage
+            - files
+            - monitor
+            - backup
+            # recommended
+            - update
+            - automate
+            - assets
+            - budget
+            - wealth
+            - recipes
+            # optional
+            - git
+            - dns-tls-proxy
+            - tools
+            - deploy
+            - certificates
+            - code
+            # - listen
+            - scoreboard
+            - infra-monitor
+            - auth
+            - remote-access
 
     homepi_shared:
       default:
@@ -50,6 +76,11 @@ homepi:
           env:
             - HPI_LOCAL_IP_ADDRESS
             - TF_VAR_HPI_LOCAL_IP_ADDRESS
+        hpi_subnet:
+          value: '192.168.10.0/24'
+          env:
+            - HPI_SUBNET
+            - TF_VAR_HPI_SUBNET
         # REQUIRED
         hpi_dns_domain:
           value: 'stuffthatsfine.com'

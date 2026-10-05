@@ -20,6 +20,13 @@ homepi:
           env:
             - HPI_STACKS_REPO_URL
             - TF_VAR_HPI_STACKS_REPO_URL
+        hpi_stacks_enabled:
+          value:
+            # default
+            - homepage
+            - files
+            - monitor
+            - backup
       vaultwarden:
         hpi_vault_token:
           value: null

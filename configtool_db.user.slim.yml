@@ -31,6 +31,11 @@ homepi:
           env:
             - HPI_LOCAL_IP_ADDRESS
             - TF_VAR_HPI_LOCAL_IP_ADDRESS
+        hpi_subnet:
+          value: '192.168.10.0/24'
+          env:
+            - HPI_SUBNET
+            - TF_VAR_HPI_SUBNET
         # REQUIRED
         hpi_dns_domain:
           value: 'stuffthatsfine.com'

@@ -10,3 +10,5 @@ uv lock --upgrade
 
 Write-Host 'Updating pre-commit...'
 pre-commit autoupdate
+pre-commit gc  # clean up unused pre-commit hooks
+pre-commit clean  # remove all pre-commit hook caches

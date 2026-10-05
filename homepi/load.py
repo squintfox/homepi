@@ -91,32 +91,9 @@ else:
 set_technitium_token_from_env()
 crit_stack.deploy_stack()
 
-stack_specs = [
-    # default stacks
-    ('homepage', 'homepage', base_config),
-    ('code', 'code', base_config),
-    ('monitor', 'monitor', base_config),
-    ('backup', 'backup', base_config),
-    # # recommended stacks
-    ('update', 'update', base_config),
-    # ('automate', 'automate', base_config),
-    ('assets', 'assets', base_config),
-    # ('budget', 'budget', base_config),
-    ('wealth', 'wealth', base_config),
-    ('recipes', 'recipes', base_config),
-    # # optional stacks
-    ('git', 'git', base_config),
-    # ('watch', 'watch', base_config),
-    ('dns-tls-proxy', 'dns-tls-proxy', base_config),
-    ('tools', 'tools', base_config),
-    # ('deploy', 'deploy', base_config),
-    ('certificates', 'certificates', base_config),
-    # # ('file-server', 'file-server', base_config),
-    # # ('listen', 'listen', base_config),
-    ('scoreboard', 'scoreboard', base_config),
-    ('infra-monitor', 'infra-monitor', base_config),
-    ('auth', 'auth', base_config),
-]
+stack_specs = []
+for stack in base_config.get_value('homepi', 'hpi_stacks_enabled'):
+    stack_specs.append((stack, stack, base_config))
 
 for stack_name, stack_path, stack_base_config in stack_specs:
     print(f"\nDeploying stack: {stack_name}")
